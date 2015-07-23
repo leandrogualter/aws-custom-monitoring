@@ -6,6 +6,7 @@ installed_packages = %w(
   libdatetime-perl
   unzip
   libwww-perl
+  libswitch-perl
 )
 
 installed_packages.each do |package_name|
@@ -16,6 +17,7 @@ end
 
 prefix = File.join('/', 'opt', 'cloudwatch_monitoring_scripts')
 script_path = File.join(prefix, 'mon-put-instance-data.pl')
+client_module_path = File.join(prefix, 'CloudWatchClient.pm')
 
 describe file(prefix) do
   it { should be_directory }
@@ -30,6 +32,13 @@ describe file(script_path) do
   it { should be_owned_by 'root' }
   it { should be_grouped_into 'root' }
   it { should be_mode '774' }
+end
+
+describe file(client_module_path) do
+  it { should be_file }
+  it { should be_owned_by 'root' }
+  it { should be_grouped_into 'root' }
+  it { should be_mode '744' }
 end
 
 describe cron do

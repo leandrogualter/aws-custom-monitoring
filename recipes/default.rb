@@ -2,9 +2,12 @@
 # Cookbook Name:: aws-custom-monitoring
 # Recipe:: default
 SCRIPT_FILENAME = 'mon-put-instance-data.pl'
+CLOUDWATCH_CLIENT_FILENAME = 'CloudWatchClient.pm'
 
 prefix = node['aws-custom-monitoring']['prefix']
 script_path = File.join(prefix, SCRIPT_FILENAME)
+cloud_watch_module_path = File.join(prefix, CLOUDWATCH_CLIENT_FILENAME)
+
 script_parameters = %w(
   --mem-util
   --disk-space-util
@@ -13,7 +16,7 @@ script_parameters = %w(
   --from-cron
 ).join(' ')
 
-package [ 'libdatetime-perl', 'unzip', 'libwww-perl' ]  do
+package [ 'libdatetime-perl', 'unzip', 'libwww-perl', 'libswitch-perl' ]  do
   action :install
 end
 
@@ -30,6 +33,13 @@ cookbook_file script_path do
   owner 'root'
   group 'root'
   mode '0774'
+end
+
+cookbook_file cloud_watch_module_path do
+  source 'CloudWatchClient.pm'
+  owner 'root'
+  group 'root'
+  mode '0744'
 end
 
 cron 'send data to amazon' do
