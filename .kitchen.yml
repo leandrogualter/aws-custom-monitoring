@@ -1,0 +1,16 @@
+---
+provisioner:
+  name: chef_solo
+
+driver:
+  name: vagrant
+
+platforms:
+  - name: ubuntu-14.04
+
+suites:
+  - name: default
+    cookbook_path: /Users/spare/Projects
+    run_list:
+      - recipe[aws-custom-monitoring::default]
+    attributes:
